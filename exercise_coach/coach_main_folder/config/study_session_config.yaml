@@ -1,0 +1,29 @@
+participant:
+  id: '21'
+  age: 26
+  resting_hr: 97
+  week_number: 3
+session:
+  robot_style: 5
+  round_num: 1
+  set_length: 40
+  rest_time: 40
+  exercise_list:
+  - bicep_curls
+  - bicep_curls
+  - lateral_raises
+  - lateral_raises
+  verbal_cadence: 2
+  nonverbal_cadence: 2
+rosbag:
+  enabled: true
+  record_all: true
+  topics:
+  - /heart_rate
+  - /joint_angles
+  - /pepper_text_request
+  - /pepper_action_request
+  - /pepper_camera/image_raw
+  output_dir: bags
+  restart_on_exit: true
+  restart_delay_sec: 5

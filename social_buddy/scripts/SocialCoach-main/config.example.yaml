@@ -1,0 +1,8 @@
+pepper_ip: "PEPPER_IP_HERE"
+pepper_port: 9559
+participant_number: 0
+week_number: 0
+generate_summary_after_session: false
+summary_prompt_file: "summaryPrompt.txt"
+summary_model: "gpt-4o"
+summary_max_tokens: 250

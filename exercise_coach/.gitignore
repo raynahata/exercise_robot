@@ -1,0 +1,48 @@
+# Large / binary files
+*.bag
+*.db3
+*.wav
+*.mp3
+*.aac
+*.flac
+*.ogg
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.npz
+*.npy
+
+# Machine learning / model files
+*.onnx
+*.tflite
+*.pb
+*.h5
+*.pth
+*.pt
+
+# Heavy folders (apply repo-wide)
+coach_main_folder/data/
+coach_main_folder/logs/
+coach_main_folder/models/Participant_*.pickle
+recordings/
+results/
+checkpoints/
+
+# ROS build artifacts
+build/
+devel/
+install/
+log/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Editor/system junk
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

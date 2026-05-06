@@ -1,0 +1,62 @@
+# Template used by prepare_participant.sh when study_config.yaml does not exist.
+
+participant:
+  id: "0"
+  age: 65
+  resting_hr: 80
+  week_number: 0
+  group: A
+  test: false
+  start_date: "2026-05-06"
+  last_session_date: "2026-05-06"
+  week_mode: auto
+  week_interval_days: 7
+  # Optional. If omitted, max_hr is calculated as 220 - age.
+  # max_hr: 155
+
+pepper:
+  ip: "192.168.1.100"
+  port: 9559
+
+study_order:
+  groups:
+    A:
+      - exercise_coach
+      - social_buddy
+    B:
+      - social_buddy
+      - exercise_coach
+
+exercise_coach:
+  # Robot style: 1 firm, 3 encouraging, 5 adaptive.
+  robot_style: 5
+  # Round 0 is intro; study rounds should be 1 or greater.
+  round_num: 1
+  set_length: 40
+  rest_time: 40
+  exercise_list:
+    - bicep_curls
+    - bicep_curls
+    - lateral_raises
+    - lateral_raises
+  # 1 low, 2 medium, 3 high.
+  verbal_cadence: 2
+  nonverbal_cadence: 2
+  rosbag:
+    enabled: true
+    record_all: true
+    topics:
+      - /heart_rate
+      - /joint_angles
+      - /pepper_text_request
+      - /pepper_action_request
+      - /pepper_camera/image_raw
+    output_dir: bags
+    restart_on_exit: true
+    restart_delay_sec: 5
+
+social_buddy:
+  generate_summary_after_session: false
+  summary_prompt_file: "summaryPrompt.txt"
+  summary_model: "gpt-4o"
+  summary_max_tokens: 250

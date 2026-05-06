@@ -1,0 +1,76 @@
+# Secrets and local machine/session config
+chatGPT.key
+*.key
+*.pem
+*.crt
+*.env
+.env
+
+
+# Participant / study data that may contain names, faces, voices, transcripts, or summaries
+conversation_log.txt
+scripts/SocialCoach-main/conversation_log.txt
+conversation_files/
+scripts/SocialCoach-main/conversation_files/
+recordings/
+scripts/SocialCoach-main/recordings/
+summaries/
+scripts/SocialCoach-main/summaries/
+prompts/
+scripts/SocialCoach-main/prompts/
+participant_*.csv
+participant_*.txt
+summary_p*.txt
+local_audio_*.wav
+video_only_*.bag
+*.bag.active
+
+# Large / binary files
+*.bag
+*.db3
+*.pickle
+*.pkl
+*.wav
+*.mp3
+*.aac
+*.flac
+*.ogg
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.m4a
+*.webm
+*.jpg
+*.jpeg
+*.png
+*.heic
+*.npz
+*.npy
+
+# Machine learning / model files
+*.onnx
+*.tflite
+*.pb
+*.h5
+*.pth
+*.pt
+*.task
+
+# ROS build artifacts
+build/
+devel/
+install/
+log/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Editor/system junk
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
