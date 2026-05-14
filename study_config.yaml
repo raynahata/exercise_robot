@@ -49,3 +49,31 @@ social_buddy:
   summary_prompt_file: summaryPrompt.txt
   summary_model: gpt-4o
   summary_max_tokens: 250
+adaptive_single_robot:
+  enabled: true
+  strategy: rule_based_v1
+  interaction_state: PRE_SESSION_CHECKIN
+  session_flow: coach_then_social
+  signals:
+    heart_rate_zone: medium
+    movement_quality: medium
+    social_engagement: medium
+  session_state:
+    fatigue: medium
+    frustration: low
+    current_mood: neutral
+    current_energy: medium
+    speech_responsiveness: medium
+    form_quality: medium
+    rep_progress: 0.0
+  user_model:
+    baseline_chattiness: 0.5
+    preferred_feedback_style: encouraging
+    correction_tolerance: 0.5
+    preferred_social_role: exercise_partner
+    motivation_style: encouraging
+    preferred_autonomy_level: 0.5
+  defaults:
+    coach_intensity: medium
+    social_warmth: medium
+    social_verbosity: medium

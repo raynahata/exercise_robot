@@ -5,12 +5,13 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MODE="${1:-}"
 CONFIG_PYTHON="${CONFIG_PYTHON:-$(command -v python3)}"
 
-if [ -z "${MODE}" ] || { [ "${MODE}" != "full" ] && [ "${MODE}" != "intro" ] && [ "${MODE}" != "coach" ] && [ "${MODE}" != "social" ]; }; then
-  echo "Usage: ./run_study.sh full|intro|coach|social" >&2
+if [ -z "${MODE}" ] || { [ "${MODE}" != "full" ] && [ "${MODE}" != "intro" ] && [ "${MODE}" != "coach" ] && [ "${MODE}" != "social" ] && [ "${MODE}" != "single" ]; }; then
+  echo "Usage: ./run_study.sh full|intro|coach|social|single" >&2
   echo "  full   = intro, then conditions in study_config.yaml group order" >&2
   echo "  intro  = social buddy intro only" >&2
   echo "  coach  = adaptive Pepper exercise coach ROS launch" >&2
   echo "  social = social buddy exercise session only" >&2
+  echo "  single = single-robot adaptive run (blended coach + social)" >&2
   exit 2
 fi
 
@@ -81,12 +82,33 @@ run_social() {
   run_social_controller_script pepper_social.py
 }
 
+run_single() {
+  echo "Computing single-robot adaptive profile..."
+  eval "$(${CONFIG_PYTHON} "${ROOT}/scripts/single_robot_policy.py" --env)"
+  "${CONFIG_PYTHON}" "${ROOT}/scripts/apply_study_config.py" --apply
+
+  FLOW="${ADAPTIVE_SESSION_FLOW:-coach_then_social}"
+  echo "Adaptive mode: ${ADAPTIVE_MODE:-balanced}"
+  echo "Coach intensity: ${ADAPTIVE_COACH_INTENSITY:-2}, social warmth: ${ADAPTIVE_SOCIAL_WARMTH:-2}, social verbosity: ${ADAPTIVE_SOCIAL_VERBOSITY:-2}"
+
+  run_intro
+  if [ "${FLOW}" = "social_then_coach" ]; then
+    run_social
+    run_coach
+  else
+    run_coach
+    run_social
+  fi
+}
+
 if [ "${MODE}" = "coach" ]; then
   run_coach
 elif [ "${MODE}" = "intro" ]; then
   run_intro
 elif [ "${MODE}" = "social" ]; then
   run_social
+elif [ "${MODE}" = "single" ]; then
+  run_single
 else
   run_intro
   for STEP in $("${CONFIG_PYTHON}" "${ROOT}/scripts/apply_study_config.py" --order); do

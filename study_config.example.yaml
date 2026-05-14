@@ -60,3 +60,36 @@ social_buddy:
   summary_prompt_file: "summaryPrompt.txt"
   summary_model: "gpt-4o"
   summary_max_tokens: 250
+
+adaptive_single_robot:
+  enabled: true
+  strategy: "rule_based_v1"
+  interaction_state: "PRE_SESSION_CHECKIN"
+  # Default tie-break ordering when policy mode is balanced.
+  session_flow: "coach_then_social"
+  # Optional initial signal placeholders.
+  signals:
+    heart_rate_zone: "medium"     # low | medium | high
+    movement_quality: "medium"    # low | medium | high
+    social_engagement: "medium"   # low | medium | high
+  # Optional day-of/session inputs. These can be replaced by live ROS/social signals.
+  session_state:
+    fatigue: "medium"             # low | medium | high or 0.0-1.0
+    frustration: "low"            # low | medium | high or 0.0-1.0
+    current_mood: "neutral"
+    current_energy: "medium"      # low | medium | high or 0.0-1.0
+    speech_responsiveness: "medium"
+    form_quality: "medium"
+    rep_progress: 0.0
+  # Long-term preferences are mutable; user model files persist updates under study_outputs.
+  user_model:
+    baseline_chattiness: 0.5
+    preferred_feedback_style: "encouraging"
+    correction_tolerance: 0.5
+    preferred_social_role: "exercise_partner"
+    motivation_style: "encouraging"
+    preferred_autonomy_level: 0.5
+  defaults:
+    coach_intensity: "medium"     # low | medium | high
+    social_warmth: "medium"       # low | medium | high
+    social_verbosity: "medium"    # low | medium | high

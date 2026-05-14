@@ -6,3 +6,6 @@ generate_summary_after_session: false
 summary_prompt_file: summaryPrompt.txt
 summary_model: gpt-4o
 summary_max_tokens: 250
+adaptive_social_warmth: 2
+adaptive_social_verbosity: 2
+adaptive_mode: balanced

@@ -58,6 +58,39 @@ def participant_output_dir(config):
     )
 
 
+def env_int(name, default_value, min_value=1, max_value=5):
+    raw_value = os.environ.get(name)
+    if raw_value is None or raw_value == '':
+        return default_value
+    try:
+        parsed = int(raw_value)
+    except ValueError:
+        return default_value
+    if parsed < min_value:
+        return min_value
+    if parsed > max_value:
+        return max_value
+    return parsed
+
+
+def env_str(name, default_value):
+    raw_value = os.environ.get(name)
+    if raw_value is None or raw_value == '':
+        return default_value
+    return str(raw_value)
+
+
+def level_to_int(value, default_value=2):
+    if isinstance(value, int):
+        return value
+    mapping = {
+        'low': 1,
+        'medium': 2,
+        'high': 3,
+    }
+    return mapping.get(str(value).lower(), default_value)
+
+
 def build_exercise_config(config):
     participant = require(config, 'participant')
     exercise = config.get('exercise_coach', {})
@@ -72,10 +105,29 @@ def build_exercise_config(config):
     if 'max_hr' in participant:
         participant_config['max_hr'] = int(participant['max_hr'])
 
+    verbal_cadence = env_int(
+        'ADAPTIVE_COACH_INTENSITY',
+        int(exercise.get('verbal_cadence', 2)),
+        min_value=1,
+        max_value=3,
+    )
+    nonverbal_cadence = env_int(
+        'ADAPTIVE_COACH_INTENSITY',
+        int(exercise.get('nonverbal_cadence', 2)),
+        min_value=1,
+        max_value=3,
+    )
+    robot_style = env_int(
+        'ADAPTIVE_ROBOT_STYLE',
+        int(exercise.get('robot_style', 5)),
+        min_value=1,
+        max_value=5,
+    )
+
     return {
         'participant': participant_config,
         'session': {
-            'robot_style': int(exercise.get('robot_style', 5)),
+            'robot_style': robot_style,
             'round_num': int(exercise.get('round_num', 1)),
             'set_length': int(exercise.get('set_length', 40)),
             'rest_time': int(exercise.get('rest_time', 40)),
@@ -83,8 +135,8 @@ def build_exercise_config(config):
                 'exercise_list',
                 ['bicep_curls', 'bicep_curls', 'lateral_raises', 'lateral_raises'],
             )),
-            'verbal_cadence': int(exercise.get('verbal_cadence', 2)),
-            'nonverbal_cadence': int(exercise.get('nonverbal_cadence', 2)),
+            'verbal_cadence': verbal_cadence,
+            'nonverbal_cadence': nonverbal_cadence,
         },
         'rosbag': {
             'enabled': bool(rosbag.get('enabled', True)),
@@ -101,6 +153,20 @@ def build_social_config(config):
     participant = require(config, 'participant')
     pepper = require(config, 'pepper')
     social = config.get('social_buddy', {})
+    adaptive = config.get('adaptive_single_robot', {})
+
+    social_warmth = env_int(
+        'ADAPTIVE_SOCIAL_WARMTH',
+        level_to_int(adaptive.get('defaults', {}).get('social_warmth', 2)),
+        min_value=1,
+        max_value=3,
+    )
+    social_verbosity = env_int(
+        'ADAPTIVE_SOCIAL_VERBOSITY',
+        level_to_int(adaptive.get('defaults', {}).get('social_verbosity', 2)),
+        min_value=1,
+        max_value=3,
+    )
 
     return {
         'pepper_ip': str(pepper.get('ip', '127.0.0.1')),
@@ -111,6 +177,11 @@ def build_social_config(config):
         'summary_prompt_file': social.get('summary_prompt_file', 'summaryPrompt.txt'),
         'summary_model': social.get('summary_model', 'gpt-4o'),
         'summary_max_tokens': int(social.get('summary_max_tokens', 250)),
+        'adaptive_social_warmth': social_warmth,
+        'adaptive_social_verbosity': social_verbosity,
+        'adaptive_mode': env_str('ADAPTIVE_MODE', 'balanced'),
+        'adaptive_action': env_str('ADAPTIVE_ACTION', 'motivational_prompt'),
+        'adaptive_message_strategy': env_str('ADAPTIVE_MESSAGE_STRATEGY', 'balanced'),
     }
 
 

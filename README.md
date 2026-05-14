@@ -171,6 +171,64 @@ For group `B`, the default order is:
 intro -> social_buddy -> exercise_coach
 ```
 
+## Run Single-Robot Adaptive Mode
+
+This mode computes one blended multimodal policy and then runs intro + both sessions in an adaptive order:
+
+```bash
+./run_study.sh single
+```
+
+The policy reads these placeholders from `study_config.yaml`:
+
+```yaml
+adaptive_single_robot:
+  interaction_state: PRE_SESSION_CHECKIN
+  signals:
+    heart_rate_zone: medium
+    movement_quality: medium
+    social_engagement: medium
+  session_state:
+    fatigue: medium
+    frustration: low
+    current_mood: neutral
+    current_energy: medium
+    speech_responsiveness: medium
+    form_quality: medium
+    rep_progress: 0.0
+  user_model:
+    baseline_chattiness: 0.5
+    preferred_feedback_style: encouraging
+    correction_tolerance: 0.5
+    preferred_social_role: exercise_partner
+    motivation_style: encouraging
+    preferred_autonomy_level: 0.5
+```
+
+And emits adaptive values used by both modules in the same run:
+
+- `ADAPTIVE_COACH_INTENSITY`
+- `ADAPTIVE_SOCIAL_WARMTH`
+- `ADAPTIVE_SOCIAL_VERBOSITY`
+- `ADAPTIVE_SESSION_FLOW`
+- `ADAPTIVE_ACTION`
+- `ADAPTIVE_MESSAGE_STRATEGY`
+- `ADAPTIVE_CORRECTION_FREQUENCY`
+
+The first milestone rule policy lives in:
+
+```text
+scripts/adaptive_social_coach/
+```
+
+It is organized as adapters for exercise perception and social dialogue, a mutable user model manager, a session state estimator, an adaptive policy manager, a finite-state interaction manager, and a JSONL data logger. The contextual-bandit replacement point is `ContextualBanditPolicyAdapter`.
+
+Each decision is logged at:
+
+```text
+study_outputs/.../data/adaptive_decisions.jsonl
+```
+
 ## Run One Part
 
 Adaptive exercise coach:
